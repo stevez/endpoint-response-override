@@ -1,0 +1,32 @@
+{
+  "name": "endpoint-response-override",
+  "version": "0.1.0",
+  "description": "The module will override an endpoint response, it is used in the integration tests for express server application",
+  "main": "index.js",
+  "scripts": {
+     "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stevez/endpoint-response-override.git"
+  },
+  "keywords": [
+    "express",
+    "json-server",
+    "mock"
+  ],
+  "author": "Steve Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stevez/endpoint-response-override/issues"
+  },
+  "homepage": "https://github.com/stevez/endpoint-response-override#readme",
+  "peerDependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "eslint-plugin-jest": "^28.10.0",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}
