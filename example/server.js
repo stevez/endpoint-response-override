@@ -6,9 +6,6 @@ const server = jsonServer.create();
 
 const router = jsonServer.router(initialData);
 
-const db = router.db;
-console.log(db.getState());
-
 const middlewares = jsonServer.defaults();
 
 server.use(responseOverrideMiddleware);

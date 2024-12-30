@@ -1,6 +1,6 @@
 {
   "name": "endpoint-response-override",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The module will override an endpoint response, it is used in the integration tests for express server application",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,9 @@
   "keywords": [
     "express",
     "json-server",
-    "mock"
+    "mock",
+    "nextjs",
+    "SSR testing"
   ],
   "author": "Steve Zhang",
   "license": "ISC",
