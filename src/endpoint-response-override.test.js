@@ -9,12 +9,40 @@ app.use(express.json());
 app.use(overrideRouter);
 
 describe('Endpoint Response Override', () => {
+
+    beforeEach(async () => {
+        await request(app)
+        .post('/reset?all=true');
+    });
+
     it('should override response', async () => {
         const response = { status: 200, body: { message: 'Hello World' } };
         const override = { url: '/hello', method: 'GET', response };
         await request(app)
             .post('/register')
             .send(override)
+            .expect(200);
+
+        await request(app)
+            .get('/hello')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .expect(response.body);
+    });
+
+    it('should override response when registering the same parallel-index', async () => {
+        const response = { status: 200, body: { message: 'Hello World' } };
+        const override = { url: '/hello', method: 'GET', response };
+        await request(app)
+            .post('/register')
+            .send(override)
+            .expect(200);
+
+        await request(app)
+            .post('/register')
+            .send({ url: '/hello', 
+                    method: 'GET', 
+                    response : { status: 200, body: { message: 'Hello Canada' } }})
             .expect(200);
 
         await request(app)
@@ -54,5 +82,37 @@ describe('Endpoint Response Override', () => {
             .expect(200)
             .expect('Content-Type', /json/)
             .expect(response.body);
+    });
+
+    it('should override response with x-parallel-index in the header', async () => {
+        const response = { status: 200, body: { message: 'Hello World' } };
+        const override = { url: '/hello', method: 'GET', response };
+        await request(app)
+            .post('/register')
+            .set('x-parallel-index', '1')
+            .send(override)
+            .expect(200);
+
+        await request(app)
+            .get('/hello')
+            .set('x-parallel-index', '1')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .expect(response.body);
+    });
+
+    it('should not override response when x-parallel-index is different', async () => {
+        const response = { status: 200, body: { message: 'Hello World' } };
+        const override = { url: '/hello', method: 'GET', response };
+        await request(app)
+            .post('/register')
+            .set('x-parallel-index', '0')
+            .send(override)
+            .expect(200);
+
+        await request(app)
+            .get('/hello')
+            .set('x-parallel-index', '1')
+            .expect(404);
     });
 });
