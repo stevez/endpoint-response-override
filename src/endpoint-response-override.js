@@ -31,12 +31,12 @@ overrideRouter.post('/reset', (req, res, next) => {
     const all = req.query.all;
     if(all === 'true') {
         endpointsOverride.length = 0;
-        res.status(200).jsonp({message: 'Reset All Endpoints Success'});
+        return res.status(200).jsonp({message: 'Reset All Endpoints Success'});
     }
     const parallelIndex = parseInt(req.headers['x-parallel-index'] ?? '0');
     if(endpointsOverride[parallelIndex]) {
         endpointsOverride[parallelIndex] = [];
-        res.status(200).jsonp({message: 'Reset Endpoints Success'});
+        return res.status(200).jsonp({message: 'Reset Endpoints Success'});
     };
     return res.status(200).jsonp({message: 'Reset skipped, invalid x-parallel-index'});
 });

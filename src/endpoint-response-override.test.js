@@ -69,6 +69,13 @@ describe('Endpoint Response Override', () => {
             .expect(404);
     });
 
+    it('should reset endpoints with invalid parallel-index', async () => {
+        await request(app)
+            .post('/reset')
+            .set('x-parallel-index', '100')
+            .expect(200);
+    });
+
     it('should support regex for url', async () => {
         const response = { status: 200, body: { message: 'Hello World' } };
         const override = { url: '/hello', method: 'GET', response };
