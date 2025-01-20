@@ -38,7 +38,7 @@ overrideRouter.post('/reset', (req, res, next) => {
         endpointsOverride[parallelIndex] = [];
         res.status(200).jsonp({message: 'Reset Endpoints Success'});
     };
-    res.status(500).jsonp({message: 'Reset Failed, invalid x-parallel-index'});
+    return res.status(200).jsonp({message: 'Reset skipped, invalid x-parallel-index'});
 });
 
 module.exports = {
