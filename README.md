@@ -58,3 +58,6 @@ After this when you call GET /users, then the server will return status 200 with
 POST /overide/reset
 response status code: 200
 This endpoint will clear all the override responses.
+
+### parallel register / override
+add Header **x-parallel-index** in each request, include **/register** and **/reset**, this feawture is useful when mocking server side response in the **playwright** tests

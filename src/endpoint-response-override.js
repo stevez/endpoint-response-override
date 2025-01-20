@@ -2,33 +2,46 @@ const express = require('express');
 
 const overrideRouter = express.Router();
 
-const endpointsOverride = [];
+const endpointsOverride = [[]];
 
 const responseOverrideMiddleware = (req, res, next) => {
-    const found = endpointsOverride.find(({url:overrideUrl, method:overrideMethod}) => req.url.match(overrideUrl) && req.method === overrideMethod);
-    if (found) {
-        const { response } = found;
-        return res.status(response.status).jsonp(response.body);
+    const parallelIndex = parseInt(req.headers['x-parallel-index'] ?? '0');
+    if( endpointsOverride[parallelIndex]) {
+        const found = endpointsOverride[parallelIndex].find(({url:overrideUrl, method:overrideMethod}) => req.url.match(overrideUrl) && req.method === overrideMethod);
+        if(found) {
+            const { response } = found;
+            return res.status(response.status).jsonp(response.body);
+        }
     }
-    else {
-       next();
-    }
+    return next();
 };
 
 overrideRouter.post('/register', (req, res, next) => {
     const { body } = req;
     const { url, method, response } = body;
-    endpointsOverride.push({url, method: method.toUpperCase(), response});
+    const parallelIndex = parseInt(req.headers['x-parallel-index'] ?? '0');
+    if(endpointsOverride[parallelIndex] === undefined) {
+        endpointsOverride[parallelIndex] = [];
+    }
+    endpointsOverride[parallelIndex].push({url, method: method.toUpperCase(), response});
     res.status(200).jsonp({message: 'Override endpoint Success'});
 });
 
 overrideRouter.post('/reset', (req, res, next) => {
-  endpointsOverride.length = 0;
-  res.status(200).jsonp({message: 'Reset Endpoints Success'});
+    const all = req.query.all;
+    if(all === 'true') {
+        endpointsOverride.length = 0;
+        res.status(200).jsonp({message: 'Reset All Endpoints Success'});
+    }
+    const parallelIndex = parseInt(req.headers['x-parallel-index'] ?? '0');
+    if(endpointsOverride[parallelIndex]) {
+        endpointsOverride[parallelIndex] = [];
+        res.status(200).jsonp({message: 'Reset Endpoints Success'});
+    };
+    res.status(500).jsonp({message: 'Reset Failed, invalid x-parallel-index'});
 });
 
 module.exports = {
     overrideRouter,
     responseOverrideMiddleware
 }
-
